@@ -71,6 +71,8 @@ Vagrant.configure("2") do |config|
   # config.berkshelf.except = []
 
   config.vm.provision :chef_solo do |chef|
+   # chef.log_level = :debug
+    chef.encrypted_data_bag_secret_key_path = '../../../../chef-repo/.chef/databags_keys'
     chef.data_bags_path = "../../data_bags"
     chef.json = {
       :authorization => {
@@ -80,14 +82,21 @@ Vagrant.configure("2") do |config|
           :passwordless => true
         },
       },
-
+      :users => [ 'soporte' ],
       :web_deploy => {
         :application => {
           :instances => {
             :cespi_portal => {
+#              :action => 'remove',
               :gecos => "Un usuario x..",
-              :ssh_keys => "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIkBbGX4uwWuiT4qFonk/0GGnDaiswoyqD/QZbrziEOQQCcpHH4EVHpr/Fd9tHQn3GDGARNDMhIYBLt4UaHelHqrVLDkbRnQlaG33VUq9H/ztwQXocfaCW4yjXMdVFQ5d4+u+252bXjG8vhQCaXdPKJXEnKOkpVxukSYys+Ig0uWir2oGf1tzEPwjODivBUbbF0M0/3CJdLVz2bkx4ABqNGRThmtCRhSpnmgNb+lDeX6ulLLRp8OIwGI2UsIdnKes8aroFB8hyHkXfnrYDqvKD59rWxkp8WG4FhtR40ePk5NmRgKcojfSDVfyOqZG2iC/JSaegBV46UbpU3yo9eu2x leandro@scarlett.local"
-              :
+              :ssh_keys => "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIkBbGX4uwWuiT4qFonk/0GGnDaiswoyqD/QZbrziEOQQCcpHH4EVHpr/Fd9tHQn3GDGARNDMhIYBLt4UaHelHqrVLDkbRnQlaG33VUq9H/ztwQXocfaCW4yjXMdVFQ5d4+u+252bXjG8vhQCaXdPKJXEnKOkpVxukSYys+Ig0uWir2oGf1tzEPwjODivBUbbF0M0/3CJdLVz2bkx4ABqNGRThmtCRhSpnmgNb+lDeX6ulLLRp8OIwGI2UsIdnKes8aroFB8hyHkXfnrYDqvKD59rWxkp8WG4FhtR40ePk5NmRgKcojfSDVfyOqZG2iC/JSaegBV46UbpU3yo9eu2x leandro@scarlett.local",
+              :database => {
+            #    name: #asume instance_name,
+            #    user: #asume instance_name,
+                password: 'mipass', 
+                type: 'mysql',
+                host: 'db1'
+              }
             }
             }
           }
@@ -103,7 +112,8 @@ Vagrant.configure("2") do |config|
     chef.run_list = [
         "recipe[user::data_bag]",
         "recipe[sudo]",
-        "recipe[web_deploy::admin_user]",
+        "recipe[database::mysql]",
+#        "recipe[database::postgresql]",
         "recipe[web_deploy::default]"
     ]
   end
