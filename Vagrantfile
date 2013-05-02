@@ -72,7 +72,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision :chef_solo do |chef|
    # chef.log_level = :debug
-    chef.encrypted_data_bag_secret_key_path = '../../../../chef-repo/.chef/databags_keys'
+#    chef.encrypted_data_bag_secret_key_path = '../../../../chef-repo/.chef/databags_keys'
     chef.data_bags_path = "../../data_bags"
     chef.json = {
       :authorization => {
@@ -110,11 +110,12 @@ Vagrant.configure("2") do |config|
 #    }
 
     chef.run_list = [
-        "recipe[user::data_bag]",
-        "recipe[sudo]",
-        "recipe[database::mysql]",
+        "recipe[user]",
+#        "recipe[user::data_bag]",
+#        "recipe[sudo]",
+#        "recipe[database::mysql]",
 #        "recipe[database::postgresql]",
-        "recipe[web_deploy::default]"
+        "recipe[web_deploy::car]"
     ]
   end
 end
