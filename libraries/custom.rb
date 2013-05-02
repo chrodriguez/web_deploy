@@ -8,6 +8,7 @@ end
 
 def admin_users
   admins = [] 
+  bag = node['user']['data_bag_name']
   user_array = node 
   node['user']['user_array_node_attr'].split("/").each do |hash_key|
     user_array = user_array.send(:[], hash_key)
@@ -24,7 +25,7 @@ def web_deploy_keys(data)
 end
 
 def web_deploy_action(data)
-  data['action'].to_sym || :create
+  data['action'] || :create
 end
 
 def web_deploy_db_name(data)
@@ -51,7 +52,7 @@ def web_deploy_db_server_data_bag_item(data)
   data['database']['db_server_data_bag_item']
 end
 
-def action web_deploy_db_action(data)
+def web_deploy_db_action(data)
   data['database']['action'] || web_deploy_action(data)
 end
 

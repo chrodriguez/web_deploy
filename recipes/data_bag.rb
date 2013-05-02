@@ -19,6 +19,11 @@
 #    ]
 #}
 
+directory node[:web_deploy][:application][:base] do
+  mode "0755"
+  owner "root"
+end
+
 instances = data_bag_item(node[:web_deploy][:application][:data_bag_name], node[:web_deploy][:application][:data_bag_item])
 Array(instances['applications']).each do |application |
   web_deploy application['name'] do
@@ -33,7 +38,7 @@ Array(instances['applications']).each do |application |
       username web_deploy_db_username(application)
       password web_deploy_db_password(application)
       db_server_data_bag_name web_deploy_db_server_data_bag_name(application)
-      db_server_data_bag_item web_deploy_db_server_data_bag_name(application)
+      db_server_data_bag_item web_deploy_db_server_data_bag_item(application)
       action web_deploy_db_action(application)
     end
   end
