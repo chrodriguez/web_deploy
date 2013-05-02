@@ -32,27 +32,27 @@ def web_deploy_db_name(data)
   data['name']
 end
 
-def web_deploy_db_clients(data)
-  data['database']['clients']
+def web_deploy_db_clients(db_data, database_defaults)
+  db_data['clients'] || database_defaults && database_defaults['clients']
 end
 
-def web_deploy_db_username(data)
-  data['database']['username'] || data['name']
+def web_deploy_db_username(db_data, application_data)
+  db_data['username'] || application_data['name']
 end
 
-def web_deploy_db_password(data)
-  data['database']['password']
+def web_deploy_db_password(db_data)
+  db_data['password']
 end
 
-def web_deploy_db_server_data_bag_name(data)
-  data['database']['db_server_data_bag_name']
+def web_deploy_db_server_data_bag_name(db_data, database_defaults)
+  db_data['db_server_data_bag_name'] || database_defaults && database_defaults['db_server_data_bag_name']
 end
 
-def web_deploy_db_server_data_bag_item(data)
-  data['database']['db_server_data_bag_item']
+def web_deploy_db_server_data_bag_item(db_data, database_defaults)
+  db_data['db_server_data_bag_item'] || database_defaults && database_defaults['db_server_data_bag_item']
 end
 
-def web_deploy_db_action(data)
-  data['database']['action'] || web_deploy_action(data)
+def web_deploy_db_action(db_data, application_data)
+  db_data['action'] || web_deploy_action(application_data)
 end
 

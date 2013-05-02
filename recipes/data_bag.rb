@@ -25,6 +25,7 @@ directory node[:web_deploy][:application][:base] do
 end
 
 instances = data_bag_item(node[:web_deploy][:application][:data_bag_name], node[:web_deploy][:application][:data_bag_item])
+database_defaults = instances['database_defaults']
 Array(instances['applications']).each do |application |
   web_deploy application['name'] do
     home web_deploy_home(application)
@@ -32,14 +33,21 @@ Array(instances['applications']).each do |application |
     deploy_keys web_deploy_keys(application)
     action web_deploy_action(application)
   end
-  if application['database']
+  database_configs = if application['database'].is_a?(Array) 
+                       application['database']
+                     elsif application['database'].is_a?(Hash)
+                       [] << application['database']
+                     else 
+                       []
+                     end
+  database_configs.each do | database |
     web_deploy_db web_deploy_db_name(application) do
-      clients web_deploy_db_clients(application)
-      username web_deploy_db_username(application)
-      password web_deploy_db_password(application)
-      db_server_data_bag_name web_deploy_db_server_data_bag_name(application)
-      db_server_data_bag_item web_deploy_db_server_data_bag_item(application)
-      action web_deploy_db_action(application)
+      clients web_deploy_db_clients(database, database_defaults)
+      username web_deploy_db_username(database, application)
+      password web_deploy_db_password(database)
+      db_server_data_bag_name web_deploy_db_server_data_bag_name(database, database_defaults)
+      db_server_data_bag_item web_deploy_db_server_data_bag_item(database, database_defaults)
+      action web_deploy_db_action(database, application)
     end
   end
 end
